@@ -1,0 +1,3 @@
+D:/Developement/Game-Project/saras-dev/cmake-build-debug/CMakeFiles/saras_dev.dir
+D:/Developement/Game-Project/saras-dev/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Developement/Game-Project/saras-dev/cmake-build-debug/CMakeFiles/rebuild_cache.dir
