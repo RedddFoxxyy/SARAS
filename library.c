@@ -3,6 +3,11 @@
 #include <SDL.h>
 
 SDL_Texture* playerTexture = NULL;
+SDL_Surface* startSurface = NULL;
+SDL_Surface* endSurface = NULL;
+SDL_Texture* startTexture = NULL;
+SDL_Texture* endTexture = NULL;
+
 
 // Define constants
 const int SCREEN_WIDTH = 800;
@@ -12,7 +17,7 @@ const int MAZE_SIZE = 25; // Adjust based on your maze size
 
 int maze[1000][1000] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        {1,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1},
+        {1,2,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1},
         {1,1,1,0,1,0,0,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,0,0,1},
         {1,1,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,1,1,0,1},
         {1,1,1,0,1,0,1,0,0,0,1,0,1,1,1,0,1,0,1,0,1,0,0,0,1},
@@ -34,7 +39,7 @@ int maze[1000][1000] = {
         {1,1,0,0,1,0,0,0,0,1,1,0,1,1,1,0,1,1,1,1,0,1,0,1,1},
         {1,1,1,0,1,0,1,1,1,1,1,0,1,0,0,0,1,0,1,1,1,1,0,1,1},
         {1,1,1,0,0,0,1,1,1,1,1,0,1,0,1,1,1,0,1,0,0,0,0,1,1},
-        {1,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1},
+        {1,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,3,1},
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 };
 
@@ -89,6 +94,14 @@ int main(int argc, char* args[]) {
         return 3;
     }
 
+    // Load the start and end images
+    startTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\start.bmp"));
+    endTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\end.bmp"));
+    if (startTexture == NULL || endTexture == NULL) {
+        printf("Could not load start or end image! SDL_Error: %s\n", SDL_GetError());
+        return 4;
+    }
+
     if (!loadPlayerTexture(renderer)) {
         return 4;
     }
@@ -135,13 +148,18 @@ int main(int argc, char* args[]) {
         // Draw the maze
         for (int y = 0; y < MAZE_SIZE; y++) {
             for (int x = 0; x < MAZE_SIZE; x++) {
+                SDL_Rect tileRect = { x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE), SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE };
                 if (maze[y][x] == 1) {
-                    SDL_Rect wallRect = { x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE), SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE };
-                    SDL_SetRenderDrawColor(renderer, 0, 128, 128, 255);
-                    SDL_RenderFillRect(renderer, &wallRect);
+                    SDL_SetRenderDrawColor(renderer, 255, 145, 124, 255);
+                    SDL_RenderFillRect(renderer, &tileRect);
+                } else if (maze[y][x] == 2) {
+                    SDL_RenderCopy(renderer, startTexture, NULL, &tileRect);
+                } else if (maze[y][x] == 3) {
+                    SDL_RenderCopy(renderer, endTexture, NULL, &tileRect);
                 }
             }
         }
+
 
         // Draw the player
         SDL_Rect playerRect = { playerX * (SCREEN_WIDTH / MAZE_SIZE), playerY * (SCREEN_HEIGHT / MAZE_SIZE), SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE };
@@ -152,6 +170,8 @@ int main(int argc, char* args[]) {
         SDL_RenderPresent(renderer);
     }
 
+    SDL_DestroyTexture(startTexture);
+    SDL_DestroyTexture(endTexture);
     SDL_DestroyTexture(playerTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
