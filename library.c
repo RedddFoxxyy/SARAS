@@ -8,11 +8,20 @@ SDL_Texture* startTexture = NULL;
 SDL_Texture* endTexture = NULL;
 SDL_Texture* endscreenTexture = NULL;
 SDL_Texture* startscreenTexture = NULL;
+SDL_Texture* gameoverTexture = NULL;
+
+// The audio data structure
+typedef struct {
+    Uint8* buffer;
+    Uint32 length;
+    SDL_AudioStream* stream;
+} AudioData;
 
 // Define constants
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 const int MAZE_SIZE = 25; // Adjust based on your maze sizes
+const Uint32 GAME_TIME = 45000; // Game time in milliseconds
 
 void delay(int time) {
     // this function will create a pause in the runtime process for the number of milliseconds that is given in 'time'
@@ -27,6 +36,22 @@ void delay(int time) {
         time2 = clock();
     }
 }
+
+// The audio callback function
+void audio_callback(void* userdata, Uint8* stream, int len) {
+    AudioData* audio_data = (AudioData*)userdata;
+    while (len > 0) {
+        int audio_len = SDL_AudioStreamGet(audio_data->stream, stream, len);
+        if (audio_len == 0) {
+            // We've reached the end of the stream, stop the audio
+            SDL_ClearQueuedAudio(1);
+            break;
+        }
+        len -= audio_len;
+        stream += audio_len;
+    }
+}
+
 
 int maze[1000][1000] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -71,7 +96,7 @@ bool initialize() {
 }
 
 bool loadPlayerTexture(SDL_Renderer* renderer) {
-    SDL_Surface* loadedSurface = SDL_LoadBMP("D:\\Developement\\Game-Project\\saras-dev\\cute-duck-png_5f81db64377e1.bmp");
+    SDL_Surface* loadedSurface = SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\suyog.bmp");
     if (loadedSurface == NULL) {
         printf("Unable to load image! SDL_Error: %s\n", SDL_GetError());
         return false;
@@ -108,7 +133,7 @@ void displayEndscreen(SDL_Renderer* renderer) {
 // Create a function to display the startscreen image.
 void displayStartscreen(SDL_Renderer* renderer) {
     if (startscreenTexture == NULL) {
-        printf("Endscreen texture is NULL!\n");
+        printf("Startscreen texture is NULL!\n");
         return;
     }
 
@@ -121,13 +146,62 @@ void displayStartscreen(SDL_Renderer* renderer) {
 
     // Update the renderer
     SDL_RenderPresent(renderer);
+}
 
-    return;
+// Create a function to display the gameover image.
+void displaygameoverscreen(SDL_Renderer* renderer) {
+    if (gameoverTexture == NULL) {
+        printf("Gameover texture is NULL!\n");
+        return;
+    }
+
+    // Clear the renderer before drawing the gameover texture.
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect gameoverRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+    SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
+
+    // Update the renderer
+    SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char* args[]) {
     if (!initialize()) {
         return 1;
+    }
+
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Load the WAV file
+    SDL_AudioSpec wav_spec;
+    Uint32 wav_length;
+    Uint8* wav_buffer;
+    if (SDL_LoadWAV("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\Audio\\03-Title-Screen.wav", &wav_spec, &wav_buffer, &wav_length) == NULL) {
+        printf("Could not open background.wav! SDL_Error: %s\n", SDL_GetError());
+        return 2;
+    }
+
+    // Create an audio stream
+    SDL_AudioStream* audio_stream = SDL_NewAudioStream(wav_spec.format, wav_spec.channels, wav_spec.freq, wav_spec.format, wav_spec.channels, wav_spec.freq);
+    SDL_AudioStreamPut(audio_stream, wav_buffer, wav_length);
+
+    // Create the audio data structure
+    AudioData audio_data = { wav_buffer, wav_length, audio_stream };
+
+    // Set the audio callback
+    wav_spec.callback = audio_callback;
+    wav_spec.userdata = &audio_data;
+
+    // Open the audio device
+    SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &wav_spec, NULL, 0);
+    if (device == 0) {
+        printf("Could not open audio device! SDL_Error: %s\n", SDL_GetError());
+        return 3;
     }
 
     // Create a window
@@ -145,14 +219,21 @@ int main(int argc, char* args[]) {
     }
 
     // Load the startscreen image into a texture.
-    startscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\startscreen.bmp"));
+    startscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\startscreen2_1.bmp"));
     if (startscreenTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 6;
     }
 
+    // Load the gameoverscreen image into a texture.
+    gameoverTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\Game-Over_1.bmp"));
+    if (gameoverTexture == NULL) {
+        printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
+        return 7;
+    }
+
     // Load the endscreen image into a texture.
-    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\endscreen.bmp"));
+    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\You-Won.bmp"));
     if (endscreenTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 5;
@@ -175,7 +256,38 @@ int main(int argc, char* args[]) {
 
     displayStartscreen(renderer);
 
+    // Get user input to start the game
+    SDL_Event f;
+    bool started = false;
+    while (!started) {
+        while (SDL_PollEvent(&f) != 0) {
+            if (f.type == SDL_QUIT) {
+                quit = true;
+            }
+
+            if (f.type == SDL_KEYDOWN) {
+                if (f.key.keysym.sym == SDLK_RETURN) {
+                    started = true;
+                }
+            }
+        }
+    }
+
+    // Start playing audio
+    SDL_PauseAudioDevice(device, 0);
+
+    // Get the start time
+    Uint32 start_time = SDL_GetTicks();
+
      while (!quit) {
+
+         if (SDL_GetTicks() - start_time >= GAME_TIME) {
+             displaygameoverscreen(renderer);
+             delay(5000);
+             printf("Game over! Time's up!\n");
+             break;
+         }
+
          while (SDL_PollEvent(&e) != 0) {
              if (e.type == SDL_QUIT) {
                  quit = true;
@@ -249,12 +361,21 @@ int main(int argc, char* args[]) {
              SDL_DestroyTexture(endscreenTexture);
              SDL_DestroyRenderer(renderer);
              SDL_DestroyWindow(window);
+             // Clean up
+             SDL_CloseAudioDevice(device);
+             SDL_FreeWAV(wav_buffer);
+             SDL_FreeAudioStream(audio_stream);
              SDL_Quit();
              break;
          }
 
 
     }
+
+    // Clean up
+    SDL_CloseAudioDevice(device);
+    SDL_FreeWAV(wav_buffer);
+    SDL_FreeAudioStream(audio_stream);
     SDL_DestroyTexture(endscreenTexture);
     SDL_DestroyTexture(startTexture);
     SDL_DestroyTexture(endTexture);
