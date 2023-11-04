@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: saras_dev
+# Project: saras
 # Configurations: Debug
 # =============================================================================
 
@@ -41,38 +41,38 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = C$:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target saras_dev
+# Object build statements for EXECUTABLE target saras
 
 
 #############################################
-# Order-only phony target for saras_dev
+# Order-only phony target for saras
 
-build cmake_object_order_depends_target_saras_dev: phony || CMakeFiles/saras_dev.dir
+build cmake_object_order_depends_target_saras: phony || CMakeFiles/saras.dir
 
-build CMakeFiles/saras_dev.dir/library.c.obj: C_COMPILER__saras_dev_unscanned_Debug C$:/Users/SUYOG/Documents/GitHub/SARAS/library.c || cmake_object_order_depends_target_saras_dev
-  DEP_FILE = CMakeFiles\saras_dev.dir\library.c.obj.d
+build CMakeFiles/saras.dir/library.c.obj: C_COMPILER__saras_unscanned_Debug C$:/Users/SUYOG/Documents/GitHub/SARAS/library.c || cmake_object_order_depends_target_saras
+  DEP_FILE = CMakeFiles\saras.dir\library.c.obj.d
   FLAGS = -g -std=gnu99 -fdiagnostics-color=always
   INCLUDES = -isystem C:/msys64/mingw64/include/SDL2
-  OBJECT_DIR = CMakeFiles\saras_dev.dir
-  OBJECT_FILE_DIR = CMakeFiles\saras_dev.dir
+  OBJECT_DIR = CMakeFiles\saras.dir
+  OBJECT_FILE_DIR = CMakeFiles\saras.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target saras_dev
+# Link build statements for EXECUTABLE target saras
 
 
 #############################################
-# Link the executable saras_dev.exe
+# Link the executable saras.exe
 
-build saras_dev.exe: C_EXECUTABLE_LINKER__saras_dev_Debug CMakeFiles/saras_dev.dir/library.c.obj | C$:/msys64/mingw64/lib/libSDL2main.a C$:/msys64/mingw64/lib/libSDL2.dll.a
+build saras.exe: C_EXECUTABLE_LINKER__saras_Debug CMakeFiles/saras.dir/library.c.obj | C$:/msys64/mingw64/lib/libSDL2main.a C$:/msys64/mingw64/lib/libSDL2.dll.a
   FLAGS = -g
   LINK_LIBRARIES = C:/msys64/mingw64/lib/libSDL2main.a  C:/msys64/mingw64/lib/libSDL2.dll.a  -lshell32  -Wl,--undefined=WinMain  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-  OBJECT_DIR = CMakeFiles\saras_dev.dir
+  OBJECT_DIR = CMakeFiles\saras.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = saras_dev.exe
-  TARGET_IMPLIB = libsaras_dev.dll.a
-  TARGET_PDB = saras_dev.exe.dbg
+  TARGET_FILE = saras.exe
+  TARGET_IMPLIB = libsaras.dll.a
+  TARGET_PDB = saras.exe.dbg
 
 
 #############################################
@@ -100,7 +100,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build saras_dev: phony saras_dev.exe
+build saras: phony saras.exe
 
 # =============================================================================
 # Folder targets.
@@ -110,7 +110,7 @@ build saras_dev: phony saras_dev.exe
 #############################################
 # Folder: C:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug
 
-build all: phony saras_dev.exe
+build all: phony saras.exe
 
 # =============================================================================
 # Built-in targets
