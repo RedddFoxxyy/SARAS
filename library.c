@@ -282,9 +282,20 @@ int main(int argc, char* args[]) {
      while (!quit) {
 
          if (SDL_GetTicks() - start_time >= GAME_TIME) {
+             SDL_PauseAudioDevice(device, 1);
              displaygameoverscreen(renderer);
-             delay(5000);
              printf("Game over! Time's up!\n");
+             SDL_DestroyTexture(startTexture);
+             SDL_DestroyTexture(endTexture);
+             SDL_DestroyTexture(playerTexture);
+             delay(5000);
+             SDL_DestroyTexture(endscreenTexture);
+             SDL_DestroyRenderer(renderer);
+             SDL_DestroyWindow(window);
+             SDL_CloseAudioDevice(device);
+             SDL_FreeWAV(wav_buffer);
+             SDL_FreeAudioStream(audio_stream);
+             SDL_Quit();
              break;
          }
 
@@ -361,7 +372,6 @@ int main(int argc, char* args[]) {
              SDL_DestroyTexture(endscreenTexture);
              SDL_DestroyRenderer(renderer);
              SDL_DestroyWindow(window);
-             // Clean up
              SDL_CloseAudioDevice(device);
              SDL_FreeWAV(wav_buffer);
              SDL_FreeAudioStream(audio_stream);
