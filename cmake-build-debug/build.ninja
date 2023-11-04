@@ -52,7 +52,7 @@ build cmake_object_order_depends_target_saras: phony || CMakeFiles/saras.dir
 build CMakeFiles/saras.dir/library.c.obj: C_COMPILER__saras_unscanned_Debug C$:/Users/SUYOG/Documents/GitHub/SARAS/library.c || cmake_object_order_depends_target_saras
   DEP_FILE = CMakeFiles\saras.dir\library.c.obj.d
   FLAGS = -g -std=gnu99 -fdiagnostics-color=always
-  INCLUDES = -isystem C:/msys64/mingw64/include/SDL2
+  INCLUDES = -I/include/SDL2 -isystem C:/msys64/mingw64/include/SDL2
   OBJECT_DIR = CMakeFiles\saras.dir
   OBJECT_FILE_DIR = CMakeFiles\saras.dir
 

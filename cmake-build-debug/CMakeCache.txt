@@ -219,6 +219,9 @@ SDL2_image_DIR:PATH=C:/msys64/mingw64/lib/cmake/SDL2_image
 //The directory containing a CMake configuration file for SDL2_mixer.
 SDL2_mixer_DIR:PATH=C:/msys64/mingw64/lib/cmake/SDL2_mixer
 
+//The directory containing a CMake configuration file for SDL2_ttf.
+SDL2_ttf_DIR:PATH=C:/msys64/mingw64/lib/cmake/SDL2_ttf
+
 //Value Computed by CMake
 saras_BINARY_DIR:STATIC=C:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug
 

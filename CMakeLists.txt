@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.26)
 project(saras C)
-
 set(CMAKE_C_STANDARD 99)
 
 add_executable(saras library.c)
+
+include_directories(${saras}/include/SDL2)
 
 # Assume SDL2 library is installed in your system
 find_package(SDL2 REQUIRED)

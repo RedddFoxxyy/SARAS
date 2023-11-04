@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <time.h>
+#include <SDL2/SDL_ttf.h>
+
 
 SDL_Texture* playerTexture = NULL;
 SDL_Texture* startTexture = NULL;
@@ -89,6 +91,11 @@ int playerY = 1;
 bool initialize() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return false;
+    }
+
+    if (TTF_Init() == -1) {
+        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
         return false;
     }
 
@@ -218,6 +225,29 @@ int main(int argc, char* args[]) {
         return 3;
     }
 
+    // Load a font
+    TTF_Font* font = TTF_OpenFont("arial.ttf", 24);
+    if (font == NULL) {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        return 4;
+    }
+
+    // Create a surface for the timer text
+    SDL_Color color = { 255, 255, 255, 255 }; // White color
+    SDL_Surface* timer_surface = TTF_RenderText_Solid(font, "45", color);
+    if (timer_surface == NULL) {
+        printf("Failed to render text! SDL_ttf Error: %s\n", TTF_GetError());
+        return 5;
+    }
+
+    // Create a texture from the surface
+    SDL_Texture* timer_texture = SDL_CreateTextureFromSurface(renderer, timer_surface);
+    if (timer_texture == NULL) {
+        printf("Failed to create texture from surface! SDL Error: %s\n", SDL_GetError());
+        return 6;
+    }
+
+
     // Load the startscreen image into a texture.
     startscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\startscreen2_1.bmp"));
     if (startscreenTexture == NULL) {
@@ -279,105 +309,115 @@ int main(int argc, char* args[]) {
     // Get the start time
     Uint32 start_time = SDL_GetTicks();
 
-     while (!quit) {
+    while (!quit) {
 
-         if (SDL_GetTicks() - start_time >= GAME_TIME) {
-             SDL_PauseAudioDevice(device, 1);
-             displaygameoverscreen(renderer);
-             printf("Game over! Time's up!\n");
-             SDL_DestroyTexture(startTexture);
-             SDL_DestroyTexture(endTexture);
-             SDL_DestroyTexture(playerTexture);
-             delay(5000);
-             SDL_DestroyTexture(endscreenTexture);
-             SDL_DestroyRenderer(renderer);
-             SDL_DestroyWindow(window);
-             SDL_CloseAudioDevice(device);
-             SDL_FreeWAV(wav_buffer);
-             SDL_FreeAudioStream(audio_stream);
-             SDL_Quit();
-             break;
-         }
+        if (SDL_GetTicks() - start_time >= GAME_TIME) {
+            SDL_PauseAudioDevice(device, 1);
+            displaygameoverscreen(renderer);
+            printf("Game over! Time's up!\n");
+            SDL_DestroyTexture(startTexture);
+            SDL_DestroyTexture(endTexture);
+            SDL_DestroyTexture(playerTexture);
+            delay(5000);
+            SDL_DestroyTexture(endscreenTexture);
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            SDL_CloseAudioDevice(device);
+            SDL_FreeWAV(wav_buffer);
+            SDL_FreeAudioStream(audio_stream);
+            SDL_Quit();
+            break;
+        }
 
-         while (SDL_PollEvent(&e) != 0) {
-             if (e.type == SDL_QUIT) {
-                 quit = true;
-             }
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
 
-             if (e.type == SDL_KEYDOWN) {
-                 // Handle user input to move the player
-                 switch (e.key.keysym.sym) {
-                     case SDLK_UP:
-                         if (maze[playerY - 1][playerX] == 0) {
-                             playerY--;
-                         }
-                         break;
-                     case SDLK_DOWN:
-                         if (maze[playerY + 1][playerX] == 0) {
-                             playerY++;
-                         }
-                         break;
-                     case SDLK_LEFT:
-                         if (maze[playerY][playerX - 1] == 0) {
-                             playerX--;
-                         }
-                         break;
-                     case SDLK_RIGHT:
-                         if (maze[playerY][playerX + 1] == 0) {
-                             playerX++;
-                         }
-                         break;
-                 }
+            if (e.type == SDL_KEYDOWN) {
+                // Handle user input to move the player
+                switch (e.key.keysym.sym) {
+                    case SDLK_UP:
+                        if (maze[playerY - 1][playerX] == 0) {
+                            playerY--;
+                        }
+                        break;
+                    case SDLK_DOWN:
+                        if (maze[playerY + 1][playerX] == 0) {
+                            playerY++;
+                        }
+                        break;
+                    case SDLK_LEFT:
+                        if (maze[playerY][playerX - 1] == 0) {
+                            playerX--;
+                        }
+                        break;
+                    case SDLK_RIGHT:
+                        if (maze[playerY][playerX + 1] == 0) {
+                            playerX++;
+                        }
+                        break;
+                }
 
-             }
-         }
+            }
+        }
 
-         // Clear the renderer
-         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-         SDL_RenderClear(renderer);
+        // Clear the renderer
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
 
-         // Draw the maze
-         for (int y = 0; y < MAZE_SIZE; y++) {
-             for (int x = 0; x < MAZE_SIZE; x++) {
-                 SDL_Rect tileRect = {x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE),
-                                      SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
-                 if (maze[y][x] == 1) {
-                     SDL_SetRenderDrawColor(renderer, 255, 160, 80, 100);
-                     SDL_RenderFillRect(renderer, &tileRect);
-                 } else if (maze[y][x] == 2) {
-                     SDL_RenderCopy(renderer, startTexture, NULL, &tileRect);
-                 } else if (maze[y][x] == 3) {
-                     SDL_RenderCopy(renderer, endTexture, NULL, &tileRect);
-                 }
-             }
-         }
+        // Draw the maze
+        for (int y = 0; y < MAZE_SIZE; y++) {
+            for (int x = 0; x < MAZE_SIZE; x++) {
+                SDL_Rect tileRect = {x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE),
+                                     SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
+                if (maze[y][x] == 1) {
+                    SDL_SetRenderDrawColor(renderer, 255, 160, 80, 100);
+                    SDL_RenderFillRect(renderer, &tileRect);
+                } else if (maze[y][x] == 2) {
+                    SDL_RenderCopy(renderer, startTexture, NULL, &tileRect);
+                } else if (maze[y][x] == 3) {
+                    SDL_RenderCopy(renderer, endTexture, NULL, &tileRect);
+                }
+            }
+        }
+        // Update the timer text
+        char timer_text[3];
+        sprintf(timer_text, "%d", (GAME_TIME - (SDL_GetTicks() - start_time)) / 1000);
+        SDL_FreeSurface(timer_surface);
+        SDL_DestroyTexture(timer_texture);
+        timer_surface = TTF_RenderText_Solid(font, timer_text, color);
+        timer_texture = SDL_CreateTextureFromSurface(renderer, timer_surface);
+
+        // Render the timer text
+        SDL_Rect timer_rect = { SCREEN_WIDTH - 50, 10, 40, 30 }; // Adjust based on your needs
+        SDL_RenderCopy(renderer, timer_texture, NULL, &timer_rect);
+
+        // Draw the player
+        SDL_Rect playerRect = {playerX * (SCREEN_WIDTH / MAZE_SIZE), playerY * (SCREEN_HEIGHT / MAZE_SIZE),
+                               SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
+        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
 
 
-         // Draw the player
-         SDL_Rect playerRect = {playerX * (SCREEN_WIDTH / MAZE_SIZE), playerY * (SCREEN_HEIGHT / MAZE_SIZE),
-                                SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
-         SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
+        // Update the renderer
+        SDL_RenderPresent(renderer);
 
-
-         // Update the renderer
-         SDL_RenderPresent(renderer);
-
-         if (playerX == 22 && playerY == 23) {
-             printf("Displaying end screen\n");
-             displayEndscreen(renderer);
-             SDL_DestroyTexture(startTexture);
-             SDL_DestroyTexture(endTexture);
-             SDL_DestroyTexture(playerTexture);
-             delay(5000);
-             SDL_DestroyTexture(endscreenTexture);
-             SDL_DestroyRenderer(renderer);
-             SDL_DestroyWindow(window);
-             SDL_CloseAudioDevice(device);
-             SDL_FreeWAV(wav_buffer);
-             SDL_FreeAudioStream(audio_stream);
-             SDL_Quit();
-             break;
-         }
+        if (playerX == 22 && playerY == 23) {
+            printf("Displaying end screen\n");
+            displayEndscreen(renderer);
+            SDL_DestroyTexture(startTexture);
+            SDL_DestroyTexture(endTexture);
+            SDL_DestroyTexture(playerTexture);
+            delay(5000);
+            SDL_DestroyTexture(endscreenTexture);
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            SDL_CloseAudioDevice(device);
+            SDL_FreeWAV(wav_buffer);
+            SDL_FreeAudioStream(audio_stream);
+            SDL_Quit();
+            break;
+        }
 
 
     }
