@@ -1,3 +1,0 @@
-C:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug/CMakeFiles/saras.dir
-C:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/SUYOG/Documents/GitHub/SARAS/cmake-build-debug/CMakeFiles/rebuild_cache.dir

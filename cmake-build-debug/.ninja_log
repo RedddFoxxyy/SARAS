@@ -1,7 +1,0 @@
-# ninja log v5
-3	477	7207976241796188	CMakeFiles/saras_dev.dir/library.c.obj	3960fcf4bc42b34c
-1	105	7208133908927142	build.ninja	90cf0ba1e2c7b073
-3	718	7208113610035123	CMakeFiles/saras.dir/library.c.obj	a90d80450dde0009
-565	663	7208096448413927	saras.exe	d53279ca0ae2f31c
-3	581	7208133955124068	CMakeFiles/saras.dir/library.c.obj	a90d80450dde0009
-582	685	7208133956131288	saras.exe	d53279ca0ae2f31c
