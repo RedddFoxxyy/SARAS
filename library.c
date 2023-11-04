@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL.h>
+#include <time.h>
 
 SDL_Texture* playerTexture = NULL;
 SDL_Texture* startTexture = NULL;
@@ -12,6 +13,19 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 const int MAZE_SIZE = 25; // Adjust based on your maze sizes
 
+void delay(int time) {
+    // this function will create a pause in the runtime process for the number of milliseconds that is given in 'time'
+    long pause;
+    clock_t time1, time2;
+
+    pause = time * (CLOCKS_PER_SEC / 1000);
+    time1 = time2 = clock();
+
+    // the clock() returns back the number of ticks till it has been called
+    while (time2 - time1 < pause) {
+        time2 = clock();
+    }
+}
 
 int maze[1000][1000] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -198,11 +212,18 @@ int main(int argc, char* args[]) {
         {
             printf("Displaying end screen\n");
             displayEndscreen(renderer);
+            SDL_DestroyTexture(startTexture);
+            SDL_DestroyTexture(endTexture);
+            SDL_DestroyTexture(playerTexture);
+            delay(5000);
+            SDL_DestroyTexture(endscreenTexture);
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            SDL_Quit();
             break;
         }
 
     }
-    getchar();
     SDL_DestroyTexture(endscreenTexture);
     SDL_DestroyTexture(startTexture);
     SDL_DestroyTexture(endTexture);
