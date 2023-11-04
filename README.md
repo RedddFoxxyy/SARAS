@@ -5,7 +5,7 @@ The above game is developed by Group SARAS from D4B consisting of Suyog, Aryamaa
 * Go to releases on the github link of game and download the latest release .exe game file. Then download the SARAS V1.2.exe and run it. Follow the on screen instruction to install it. Once installed go to the SARAS(V1.2) folder and run SARAS_codeblocks.exe to start the game.
 
 ## Compilation:-
-* The code can be compiled using Codeblocks or using any other IDE that supports C. For codeblocks, download the mingw32 version of codeblocks and link the libraries in the include folder of the repository then open the .cbp file and build the main.c file to compile the game. For other IDEs the compilation is given below:-
+* The code can be compiled using Codeblocks or using any other IDE that supports C. For codeblocks, download the mingw32 version of codeblocks and link the libraries in the include folder of the repository then open the .cbp file and build the main.c file to compile the game. Remember you have to edit the file paths in the main.c file according to your pc! For other IDEs the compilation is given below:-
 ## Download and install msys2 64bit
 * Download msys2 64bit from here: https://www.msys2.org/ and install it, then open MYSYS2 UCRT64 application.
   
