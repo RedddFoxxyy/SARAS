@@ -74,9 +74,20 @@ bool loadPlayerTexture(SDL_Renderer* renderer) {
 
 // Create a function to display the endscreen image.
 void displayEndscreen(SDL_Renderer* renderer) {
-    printf("Displaying end screen\n"); // Add this line for debugging
+    if (endscreenTexture == NULL) {
+        printf("Endscreen texture is NULL!\n");
+        return;
+    }
+
+    // Clear the renderer before drawing the endscreen texture.
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
     SDL_Rect endscreenRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
     SDL_RenderCopy(renderer, endscreenTexture, NULL, &endscreenRect);
+
+    // Update the renderer
+    SDL_RenderPresent(renderer);
 }
 
 
@@ -100,7 +111,7 @@ int main(int argc, char* args[]) {
     }
 
     // Load the endscreen image into a texture.
-    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\end.bmp"));
+    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\endscreen.bmp"));
     if (endscreenTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 5;
@@ -151,11 +162,7 @@ int main(int argc, char* args[]) {
                         }
                         break;
                 }
-                if (playerX == 22 && playerY == 23)
-                {
-                    printf("Displaying end screen\n");
-                    displayEndscreen(renderer);
-                }
+
             }
         }
 
@@ -186,8 +193,17 @@ int main(int argc, char* args[]) {
 
         // Update the renderer
         SDL_RenderPresent(renderer);
-    }
 
+        if (playerX == 22 && playerY == 23)
+        {
+            printf("Displaying end screen\n");
+            displayEndscreen(renderer);
+            break;
+        }
+
+    }
+    getchar();
+    SDL_DestroyTexture(endscreenTexture);
     SDL_DestroyTexture(startTexture);
     SDL_DestroyTexture(endTexture);
     SDL_DestroyTexture(playerTexture);
