@@ -405,15 +405,13 @@
 	"begin_code.h"
 	"close_code.h"
 
-1699123520 source:c:\users\suyog\documents\github\saras\main.c
+1699125425 source:c:\users\suyog\documents\github\saras\main.c
 	<stdio.h>
 	<stdbool.h>
 	<SDL2/SDL.h>
 	<time.h>
 	<SDL2/SDL_ttf.h>
 	<stdlib.h>
-	<unistd.h>
-	<windows.h>
 
 1699117606 c:\users\suyog\documents\github\saras\include\sdl2\sdl.h
 	"SDL_main.h"

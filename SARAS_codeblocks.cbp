@@ -30,7 +30,17 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="D:/Developement/Libraries/SDL_2_w64-mingw32/include" />
+			<Add directory="D:/Developement/Libraries/SDL_2_ttf-w64-mingw32/include" />
 		</Compiler>
+		<Linker>
+			<Add option="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf" />
+			<Add directory="D:/Developement/Libraries/SDL_2_w64-mingw32/lib" />
+			<Add directory="D:/Developement/Libraries/SDL_2_ttf-w64-mingw32/lib" />
+		</Linker>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

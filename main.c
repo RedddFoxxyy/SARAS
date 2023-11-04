@@ -4,9 +4,6 @@
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <windows.h>
-#include <string.h>
 
 SDL_Texture* playerTexture = NULL;
 SDL_Texture* startTexture = NULL;
@@ -406,6 +403,7 @@ int main(int argc, char* args[]) {
 
          if (playerX == 22 && playerY == 23) {
              printf("Displaying end screen\n");
+             delay(700);
              displayEndscreen(renderer);
              SDL_DestroyTexture(startTexture);
              SDL_DestroyTexture(endTexture);
