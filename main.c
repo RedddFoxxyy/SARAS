@@ -4,6 +4,9 @@
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <windows.h>
+#include <string.h>
 
 SDL_Texture* playerTexture = NULL;
 SDL_Texture* startTexture = NULL;
@@ -54,27 +57,6 @@ void audio_callback(void* userdata, Uint8* stream, int len) {
     }
 }
 
-char* getImagePath(const char* filename) {
-  char* cwd = getcwd(NULL, 0);
-  if (cwd == NULL) {
-    perror("getcwd() failed");
-    exit(1);
-  }
-
-  // Append the image filename to the current working directory
-  char* imagePath = malloc(strlen(cwd) + strlen(filename) + 1);
-  if (imagePath == NULL) {
-    perror("malloc() failed");
-    exit(1);
-  }
-
-  sprintf(imagePath, "%s/%s", cwd, filename);
-
-  return imagePath;
-}
-
-
-
 int maze[1000][1000] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
         {1,2,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1},
@@ -123,8 +105,7 @@ bool initialize() {
 }
 
 bool loadPlayerTexture(SDL_Renderer* renderer) {
-    //char* imagePath = getImagePath("suyog.bmp");
-    SDL_Surface* loadedSurface = SDL_LoadBMP("D:\\Developement\\Game-Project\\SARAS_codeblocks\\bin\\Debug\\suyog.bmp");
+    SDL_Surface* loadedSurface = SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\suyog.bmp");
     if (loadedSurface == NULL) {
         printf("Unable to load image! SDL_Error: %s\n", SDL_GetError());
         return false;
@@ -393,7 +374,7 @@ int main(int argc, char* args[]) {
                  SDL_Rect tileRect = {x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE),
                                       SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
                  if (maze[y][x] == 1) {
-                     SDL_SetRenderDrawColor(renderer, 255, 160, 80, 100);
+                     SDL_SetRenderDrawColor(renderer, 80, 160, 250, 255);
                      SDL_RenderFillRect(renderer, &tileRect);
                  } else if (maze[y][x] == 2) {
                      SDL_RenderCopy(renderer, startTexture, NULL, &tileRect);
