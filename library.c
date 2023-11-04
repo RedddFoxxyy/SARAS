@@ -219,7 +219,7 @@ int main(int argc, char* args[]) {
                  SDL_Rect tileRect = {x * (SCREEN_WIDTH / MAZE_SIZE), y * (SCREEN_HEIGHT / MAZE_SIZE),
                                       SCREEN_WIDTH / MAZE_SIZE, SCREEN_HEIGHT / MAZE_SIZE};
                  if (maze[y][x] == 1) {
-                     SDL_SetRenderDrawColor(renderer, 0, 128, 128, 255);
+                     SDL_SetRenderDrawColor(renderer, 255, 160, 80, 100);
                      SDL_RenderFillRect(renderer, &tileRect);
                  } else if (maze[y][x] == 2) {
                      SDL_RenderCopy(renderer, startTexture, NULL, &tileRect);
