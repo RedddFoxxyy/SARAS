@@ -433,6 +433,9 @@ int main(int argc, char* args[]) {
          if (playerX == 22 && playerY == 23) {
              printf("Displaying end screen\n");
              delay(200);
+             SDL_CloseAudioDevice(device);
+             SDL_FreeWAV(wav_buffer);
+             SDL_FreeAudioStream(audio_stream);
              displayEndscreen(renderer);
              SDL_DestroyTexture(startTexture);
              SDL_DestroyTexture(endTexture);
@@ -441,9 +444,6 @@ int main(int argc, char* args[]) {
              SDL_DestroyTexture(endscreenTexture);
              SDL_DestroyRenderer(renderer);
              SDL_DestroyWindow(window);
-             SDL_CloseAudioDevice(device);
-             SDL_FreeWAV(wav_buffer);
-             SDL_FreeAudioStream(audio_stream);
              SDL_Quit();
              break;
          }
