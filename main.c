@@ -4,6 +4,7 @@
 #include <time.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
+#include <windows.h>
 
 SDL_Texture* playerTexture = NULL;
 SDL_Texture* startTexture = NULL;
@@ -54,6 +55,27 @@ void audio_callback(void* userdata, Uint8* stream, int len) {
     }
 }
 
+char* GetExecutablePath() {
+    char buffer[MAX_PATH];
+    GetModuleFileName(NULL, buffer, MAX_PATH);
+    size_t pos = strrchr(buffer, '\\') - buffer + 1;
+    char* result = (char*) malloc(pos + 1);
+    strncpy(result, buffer, pos);
+    result[pos] = '\0';
+    return result;
+}
+
+char* GetFilePath(const char* filename) {
+    char* executablePath = GetExecutablePath();
+    size_t len = strlen(executablePath) + strlen(filename) + 2;
+    char* result = (char*) malloc(len);
+    strcpy(result, executablePath);
+    strcat(result, "\\");
+    strcat(result, filename);
+    free(executablePath);
+    return result;
+}
+
 int maze[1000][1000] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
         {1,2,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1},
@@ -102,7 +124,8 @@ bool initialize() {
 }
 
 bool loadPlayerTexture(SDL_Renderer* renderer) {
-    SDL_Surface* loadedSurface = SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\suyog.bmp");
+    char* filePath = GetFilePath("suyog.bmp");
+    SDL_Surface* loadedSurface = SDL_LoadBMP(filePath);
     if (loadedSurface == NULL) {
         printf("Unable to load image! SDL_Error: %s\n", SDL_GetError());
         return false;
@@ -187,7 +210,8 @@ int main(int argc, char* args[]) {
     SDL_AudioSpec wav_spec;
     Uint32 wav_length;
     Uint8* wav_buffer;
-    if (SDL_LoadWAV("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\Audio\\03-Title-Screen.wav", &wav_spec, &wav_buffer, &wav_length) == NULL) {
+    char* musicPath = GetFilePath("03-Title-Screen.wav");
+    if (SDL_LoadWAV(musicPath, &wav_spec, &wav_buffer, &wav_length) == NULL) {
         printf("Could not open background.wav! SDL_Error: %s\n", SDL_GetError());
         return 2;
     }
@@ -248,29 +272,34 @@ int main(int argc, char* args[]) {
 
 
     // Load the startscreen image into a texture.
-    startscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\startscreen2_1.bmp"));
+    char* startscreenPath = GetFilePath("startscreen2_1.bmp");
+    startscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP(startscreenPath));
     if (startscreenTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 6;
     }
 
     // Load the gameoverscreen image into a texture.
-    gameoverTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\Game-Over_1.bmp"));
+    char* gameoverscreenPath = GetFilePath("Game-Over_1.bmp");
+    gameoverTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP(gameoverscreenPath));
     if (gameoverTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 7;
     }
 
     // Load the endscreen image into a texture.
-    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\You-Won.bmp"));
+    char* endscreenPath = GetFilePath("You-Won.bmp");
+    endscreenTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP(endscreenPath));
     if (endscreenTexture == NULL) {
         printf("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
         return 5;
     }
 
     // Load the start and end images
-    startTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\start.bmp"));
-    endTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP("C:\\Users\\SUYOG\\Documents\\GitHub\\SARAS\\sprites\\end.bmp"));
+    char* startimagePath = GetFilePath("start.bmp");
+    startTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP(startimagePath));
+    char* endimagePath = GetFilePath("end.bmp");
+    endTexture = SDL_CreateTextureFromSurface(renderer, SDL_LoadBMP(endimagePath));
     if (startTexture == NULL || endTexture == NULL) {
         printf("Could not load start or end image! SDL_Error: %s\n", SDL_GetError());
         return 4;
@@ -403,7 +432,7 @@ int main(int argc, char* args[]) {
 
          if (playerX == 22 && playerY == 23) {
              printf("Displaying end screen\n");
-             delay(700);
+             delay(200);
              displayEndscreen(renderer);
              SDL_DestroyTexture(startTexture);
              SDL_DestroyTexture(endTexture);
