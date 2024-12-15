@@ -1,7 +1,7 @@
 # SARAS
 The above game is developed by Group SARAS from D4B consisting of Suyog, Aryamaan and Rutuj. Saras is an interactive maze game written using SDL library in C programming language. You can find the actual code in library.c file and the command script to compile the code in CmakeLists.txt file. You will be needing the SDL library installed in your gcc compiler files, or you have to link the SDL library files using make or cmake. Steps to install SDL for mingw64 gcc and g++ compilers is given below:-(Also note that the actual code files are in the main branch of the repository)
 
-##Installation of game:-
+## Installation of game:-
 * Go to releases on the github link of game and download the latest release .exe game file. Then download the SARAS V1.3.exe and run it. Follow the on screen instruction to install it. Once installed go to the SARAS(V1.3) folder and run SARAS_codeblocks.exe to start the game. Your antivirus  ight try to stop the exe file from being run, you have to disable the antivirus and then run the exe file. Windows protection screen might also appear, you have to click on more options and then click run anywway. If you are using a chromium based browser the browser might tell the file is not safe, click on keep anyway.
 
 ## Compilation:-
